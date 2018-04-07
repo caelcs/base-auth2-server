@@ -1,0 +1,104 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'docker'
+apply plugin: 'application'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'pl.allegro.tech.build.axion-release'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("pl.allegro.tech.build:axion-release-plugin:${axionReleasePluginVersion}")
+        classpath("se.transmode.gradle:gradle-docker:${dockerVersion}")
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group = 'uk.co.caeldev'
+
+mainClassName = 'uk.co.caeldev.base.auth2.Application'
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/releases/"
+    }
+}
+
+/*
+configurations.all {
+  // check for updates every build
+  resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+*/
+
+scmVersion {
+    tag {
+        prefix = 'RELEASE'
+    }
+}
+
+version = scmVersion.version
+
+docker {
+    maintainer = 'Adolfo Custidiano <adolfoecs@gmail.com>'
+    baseImage = 'java:8'
+}
+
+jar {
+    baseName = rootProject.name
+    version = version
+}
+
+task buildDocker(type: Docker, dependsOn: build) {
+    push = true
+    applicationName = "${jar.baseName}"
+    tagVersion = "${jar.version}"
+    tag = "adolfoecs/${applicationName}"
+
+    runCommand("mkdir -p /opt/applications")
+
+    addFile("${buildDir}/distributions/${project.name}-${project.version}.tar", "/opt/applications/")
+
+    workingDir("/opt/applications/${project.name}-${project.version}/")
+
+    entryPoint(["bin/${project.name}"])
+
+}
+
+configurations {
+    testCompile.exclude group: 'org.mortbay.jetty', module: 'servlet-api'
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-aop")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-hateoas")
+    compile("org.springframework.boot:spring-boot-starter-tomcat")
+    compile("com.google.code.gson:gson:${gsonVersion}")
+    compile("com.google.guava:guava:${guavaVersion}")
+    compile("uk.co.caeldev:spring-morphia:${springMorphia}")
+
+    compile("org.apache.commons:commons-lang3:${apacheCommonsLang3Version}")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("org.assertj:assertj-core:${assertjCoreVersion}")
+    testCompile("uk.org.fyodor:fyodor-core:${fyodorVersion}")
+    testCompile("uk.org.fyodor:fyodor-junit:${fyodorVersion}")
+    testCompile("io.rest-assured:rest-assured:${restAssuredVersion}")
+    testCompile("com.github.tomakehurst:wiremock:${wiremockVersion}")
+    testCompile("com.github.fakemongo:fongo:${fongoVersion}")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = rootGradleVersion
+}
