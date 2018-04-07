@@ -1,10 +1,3 @@
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'docker'
-apply plugin: 'application'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'pl.allegro.tech.build.axion-release'
-
 buildscript {
     repositories {
         mavenCentral()
@@ -17,6 +10,14 @@ buildscript {
         classpath("se.transmode.gradle:gradle-docker:${dockerVersion}")
     }
 }
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'docker'
+apply plugin: 'application'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'pl.allegro.tech.build.axion-release'
+apply plugin: 'io.spring.dependency-management'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -33,12 +34,12 @@ repositories {
     }
 }
 
-/*
+
 configurations.all {
   // check for updates every build
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
-*/
+
 
 scmVersion {
     tag {
@@ -73,17 +74,16 @@ task buildDocker(type: Docker, dependsOn: build) {
     entryPoint(["bin/${project.name}"])
 
 }
-
+/*
 configurations {
     testCompile.exclude group: 'org.mortbay.jetty', module: 'servlet-api'
-}
+}*/
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-aop")
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-hateoas")
-    compile("org.springframework.boot:spring-boot-starter-tomcat")
     compile("com.google.code.gson:gson:${gsonVersion}")
     compile("com.google.guava:guava:${guavaVersion}")
     compile("uk.co.caeldev:spring-morphia:${springMorphia}")
