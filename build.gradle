@@ -34,7 +34,6 @@ repositories {
     }
 }
 
-
 configurations.all {
   // check for updates every build
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
