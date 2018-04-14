@@ -1,0 +1,15 @@
+mongo:
+  host: localhost
+  port: 27017
+  database: invoicer
+  username: dev
+  password: dev
+
+info:
+  app:
+    name: oauth2
+    description: OAuth2 Provider
+
+server:
+  port: 9080
+  contextPath: /sso

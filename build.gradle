@@ -7,24 +7,22 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("pl.allegro.tech.build:axion-release-plugin:${axionReleasePluginVersion}")
-        classpath("se.transmode.gradle:gradle-docker:${dockerVersion}")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'docker'
-apply plugin: 'application'
+apply plugin: 'signing'
+apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'pl.allegro.tech.build.axion-release'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 group = 'uk.co.caeldev'
-
-mainClassName = 'uk.co.caeldev.base.auth2.Application'
 
 repositories {
     mavenCentral()
@@ -48,54 +46,122 @@ scmVersion {
 
 version = scmVersion.version
 
-docker {
-    maintainer = 'Adolfo Custidiano <adolfoecs@gmail.com>'
-    baseImage = 'java:8'
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
 }
 
 jar {
-    baseName = rootProject.name
+    archivesBaseName = rootProject.name
+    group = group
     version = version
+    manifest {
+        attributes 'Implementation-Title': 'Base Auth2 Server',
+                'Implementation-Version': version,
+                'Built-By': System.getProperty('user.name'),
+                'Built-Date': new Date(),
+                'Built-JDK': System.getProperty('java.version'),
+                'Built-Gradle': gradle.gradleVersion
+    }
 }
 
-task buildDocker(type: Docker, dependsOn: build) {
-    push = true
-    applicationName = "${jar.baseName}"
-    tagVersion = "${jar.version}"
-    tag = "adolfoecs/${applicationName}"
-
-    runCommand("mkdir -p /opt/applications")
-
-    addFile("${buildDir}/distributions/${project.name}-${project.version}.tar", "/opt/applications/")
-
-    workingDir("/opt/applications/${project.name}-${project.version}/")
-
-    entryPoint(["bin/${project.name}"])
-
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
 }
-/*
-configurations {
-    testCompile.exclude group: 'org.mortbay.jetty', module: 'servlet-api'
-}*/
+
+signing {
+    sign configurations.archives
+    required = { gradle.taskGraph.hasTask("uploadArchives") && !version.endsWith("SNAPSHOT") }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.enabled false
+        html.destination file("${buildDir}/jacoco")
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                authentication(userName: "${System.env.ossrhUsername}", password: "${System.env.ossrhPassword}")
+            }
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+                authentication(userName: "${System.env.ossrhUsername}", password: "${System.env.ossrhPassword}")
+            }
+
+            //repository(url: "/Users/me/.m2/repository")
+
+            pom.project {
+
+                parent {
+                    groupId 'org.springframework.boot'
+                    artifactId 'spring-boot-starter-parent'
+                    version "${springBootVersion}"
+                }
+
+                name 'Base Auth2 Server'
+                packaging "jar"
+
+                description "A Library to have a Oauth2 server using mongo db"
+                url "https://github.com/caelwinner/base-auth2-server"
+
+                scm {
+                    url "https://github.com/caelwinner/base-auth2-server.git"
+                    connection "https://github.com/caelwinner/base-auth2-server.git"
+                    developerConnection "https://github.com/caelwinner/base-auth2-server.git"
+                }
+
+                licenses {
+                    license {
+                        name "MIT"
+                        url "http://opensource.org/licenses/MIT"
+                        distribution "repo"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id "caelwinner"
+                        name "Adolfo Custidiano"
+                        email "adolfoecs@gmail.com"
+                    }
+                }
+            }
+        }
+    }
+}
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-aop")
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile("org.springframework.boot:spring-boot-starter-hateoas")
-    compile("com.google.code.gson:gson:${gsonVersion}")
-    compile("com.google.guava:guava:${guavaVersion}")
-    compile("uk.co.caeldev:spring-morphia:${springMorphia}")
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.security.oauth:spring-security-oauth2"
+    implementation "com.google.code.gson:gson:${gsonVersion}"
+    implementation "com.google.guava:guava:${guavaVersion}"
+    implementation "uk.co.caeldev:spring-security-mongo:${springSecurityMongoVersion}"
 
-    compile("org.apache.commons:commons-lang3:${apacheCommonsLang3Version}")
 
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    testCompile("org.assertj:assertj-core:${assertjCoreVersion}")
-    testCompile("uk.org.fyodor:fyodor-core:${fyodorVersion}")
-    testCompile("uk.org.fyodor:fyodor-junit:${fyodorVersion}")
-    testCompile("io.rest-assured:rest-assured:${restAssuredVersion}")
-    testCompile("com.github.tomakehurst:wiremock:${wiremockVersion}")
-    testCompile("com.github.fakemongo:fongo:${fongoVersion}")
+    implementation "org.apache.commons:commons-lang3:${apacheCommonsLang3Version}"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.assertj:assertj-core:${assertjCoreVersion}"
+    testImplementation "uk.org.fyodor:fyodor-core:${fyodorVersion}"
+    testImplementation "uk.org.fyodor:fyodor-junit:${fyodorVersion}"
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+    testImplementation "com.github.tomakehurst:wiremock:${wiremockVersion}"
+    testImplementation "com.github.fakemongo:fongo:${fongoVersion}"
 }
 
 task wrapper(type: Wrapper) {
