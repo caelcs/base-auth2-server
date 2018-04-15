@@ -151,6 +151,7 @@ dependencies {
     implementation "com.google.code.gson:gson:${gsonVersion}"
     implementation "com.google.guava:guava:${guavaVersion}"
     implementation "uk.co.caeldev:spring-security-mongo:${springSecurityMongoVersion}"
+    implementation "uk.co.caeldev:spring-mvc-utils:${springMvcUtilsVersion}"
 
 
     implementation "org.apache.commons:commons-lang3:${apacheCommonsLang3Version}"
