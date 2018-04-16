@@ -16,7 +16,7 @@ public class SSM {
         return MongoClientDetailsBuilder.mongoClientDetailsBuilder()
                 .accessTokenValiditySeconds(30000)
                 .refreshTokenValiditySeconds(30000)
-                .additionalInformation(Maps.<String, Object>newHashMap())
+                .additionalInformation(Maps.newHashMap())
                 .autoApproveScopes("");
     }
 }

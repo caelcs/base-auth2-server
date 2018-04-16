@@ -9,6 +9,8 @@ auth:
   logInUrl: /login
   logInViewName: login
   failureUrl: /login
+  ignoreWebStaticResources:
+    - /fonts/**
 
 info:
   app:

@@ -1,18 +1,15 @@
 package uk.co.caeldev.base.auth2.builders;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import uk.co.caeldev.base.auth2.features.user.UserResource;
 import uk.co.caeldev.base.auth2.persisters.Persister;
 import uk.co.caeldev.springsecuritymongo.domain.User;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
-import static com.google.common.collect.FluentIterable.from;
+import java.util.stream.Collectors;
 
 public class UserBuilder implements Builder<User> {
 
@@ -33,77 +30,50 @@ public class UserBuilder implements Builder<User> {
     }
 
     public User build() {
-        return new User(password, username, userUUID, grantedAuthorities, accountNonExpired, accountNonLocked, credentialsNonExpired, enabled);
+        return new User(password, username, userUUID, grantedAuthorities, accountNonExpired, accountNonLocked,
+                credentialsNonExpired, enabled);
     }
 
     @Override
-    public User persist(Persister persister) {
+    public User persist(final Persister persister) {
         return persister.persist(build());
     }
 
-    public UserBuilder username(String username) {
+    public UserBuilder username(final String username) {
         this.username = username;
         return this;
     }
 
-    public UserBuilder password(String password) {
+    public UserBuilder password(final String password) {
         this.password = password;
         return this;
     }
 
-    public UserBuilder accountNonExpired(boolean accountNonExpired) {
+    public UserBuilder accountNonExpired(final boolean accountNonExpired) {
         this.accountNonExpired = accountNonExpired;
         return this;
     }
 
-    public UserBuilder accountNonLocked(boolean accountNonLocked) {
+    public UserBuilder accountNonLocked(final boolean accountNonLocked) {
         this.accountNonLocked = accountNonLocked;
         return this;
     }
 
-    public UserBuilder credentialsNonExpired(boolean credentialsNonExpired) {
+    public UserBuilder credentialsNonExpired(final boolean credentialsNonExpired) {
         this.credentialsNonExpired = credentialsNonExpired;
         return this;
     }
 
-    public UserBuilder enabled(boolean enabled) {
+    public UserBuilder enabled(final boolean enabled) {
         this.enabled = enabled;
         return this;
     }
 
-    public UserBuilder grantedAuthorities(String... grantedAuthorities) {
-        List<String> grantedAuthoritiesString = Lists.newArrayList(grantedAuthorities);
-        this.grantedAuthorities = from(grantedAuthoritiesString).transform(toGrantedAuthority()).toSet();
+    public UserBuilder grantedAuthorities(final String... grantedAuthorities) {
+        final List<String> grantedAuthoritiesString = Lists.newArrayList(grantedAuthorities);
+        this.grantedAuthorities = grantedAuthoritiesString.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
         return this;
-    }
-
-    private Function<String, GrantedAuthority> toGrantedAuthority() {
-        return new Function<String, GrantedAuthority>() {
-            @Override
-            public GrantedAuthority apply(String input) {
-                    return new SimpleGrantedAuthority(input);
-            }
-        };
-    }
-
-    public UserBuilder fromUserResource(UserResource userResource) {
-        this.username = userResource.getUsername();
-        this.password = userResource.getPassword();
-        this.grantedAuthorities = from(userResource.getAuthorities()).transform(toGrantedAuthorities()).toSet();
-        this.accountNonExpired = userResource.isAccountNonExpired();
-        this.accountNonLocked = userResource.isAccountNonLocked();
-        this.credentialsNonExpired = userResource.isCredentialsNonExpired();
-        this.enabled = userResource.isEnabled();
-        this.userUUID = UUID.fromString(userResource.getUserUUID());
-        return this;
-    }
-
-    private Function<String, GrantedAuthority> toGrantedAuthorities() {
-        return new Function<String, GrantedAuthority>() {
-            @Override
-            public GrantedAuthority apply(String input) {
-                return new SimpleGrantedAuthority(input);
-            }
-        };
     }
 }

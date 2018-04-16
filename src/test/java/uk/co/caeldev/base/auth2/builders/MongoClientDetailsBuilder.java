@@ -1,7 +1,5 @@
 package uk.co.caeldev.base.auth2.builders;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +10,7 @@ import uk.co.caeldev.springsecuritymongo.domain.MongoClientDetails;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MongoClientDetailsBuilder implements Builder<MongoClientDetails>{
 
@@ -32,7 +31,9 @@ public class MongoClientDetailsBuilder implements Builder<MongoClientDetails>{
 
     @Override
     public MongoClientDetails build() {
-        return new MongoClientDetails(clientId, clientSecret, scopes, resourceIds, authorizedGrantTypes, registeredRedirectUris, authorities, accessTokenValiditySeconds, refreshTokenValiditySeconds, additionalInformation, autoApproveScopes);
+        return new MongoClientDetails(clientId, clientSecret, scopes, resourceIds, authorizedGrantTypes,
+                registeredRedirectUris, authorities, accessTokenValiditySeconds, refreshTokenValiditySeconds,
+                additionalInformation, autoApproveScopes);
     }
 
     @Override
@@ -44,69 +45,62 @@ public class MongoClientDetailsBuilder implements Builder<MongoClientDetails>{
         return new MongoClientDetailsBuilder();
     }
 
-    public MongoClientDetailsBuilder clientId(String clientId) {
+    public MongoClientDetailsBuilder clientId(final String clientId) {
         this.clientId = clientId;
         return this;
     }
 
-    public MongoClientDetailsBuilder scopes(String... scopes) {
+    public MongoClientDetailsBuilder scopes(final String... scopes) {
         this.scopes = Sets.newHashSet(scopes);
         return this;
     }
 
-    public MongoClientDetailsBuilder authorizedGrantTypes(String... authorizedGrantTypes) {
+    public MongoClientDetailsBuilder authorizedGrantTypes(final String... authorizedGrantTypes) {
         this.authorizedGrantTypes = Sets.newHashSet(authorizedGrantTypes);
         return this;
     }
 
 
-    public MongoClientDetailsBuilder clientSecret(String clientSecret) {
+    public MongoClientDetailsBuilder clientSecret(final String clientSecret) {
         this.clientSecret = clientSecret;
         return this;
     }
 
-    public MongoClientDetailsBuilder resourceIds(String... resourceIds) {
+    public MongoClientDetailsBuilder resourceIds(final String... resourceIds) {
         this.resourceIds = Sets.newHashSet(resourceIds);
         return this;
     }
 
-    public MongoClientDetailsBuilder accessTokenValiditySeconds(int accessTokenValiditySeconds) {
+    public MongoClientDetailsBuilder accessTokenValiditySeconds(final int accessTokenValiditySeconds) {
         this.accessTokenValiditySeconds = accessTokenValiditySeconds;
         return this;
     }
 
-    public MongoClientDetailsBuilder refreshTokenValiditySeconds(int refreshTokenValiditySeconds) {
+    public MongoClientDetailsBuilder refreshTokenValiditySeconds(final int refreshTokenValiditySeconds) {
         this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
         return this;
     }
 
-    public MongoClientDetailsBuilder additionalInformation(Map<String, Object> additionalInformation) {
+    public MongoClientDetailsBuilder additionalInformation(final Map<String, Object> additionalInformation) {
         this.additionalInformation = additionalInformation;
         return this;
     }
 
-    public MongoClientDetailsBuilder autoApproveScopes(String... autoApproveScopes) {
+    public MongoClientDetailsBuilder autoApproveScopes(final String... autoApproveScopes) {
         this.autoApproveScopes = Sets.newHashSet(autoApproveScopes);
         return this;
     }
 
-    public MongoClientDetailsBuilder redirect(String... redirect) {
+    public MongoClientDetailsBuilder redirect(final String... redirect) {
         this.registeredRedirectUris = Sets.newHashSet(redirect);
         return this;
     }
 
-    public MongoClientDetailsBuilder authorities(String... authorities) {
+    public MongoClientDetailsBuilder authorities(final String... authorities) {
         final List<String> authoritiesString = Lists.newArrayList(authorities);
-        this.authorities = FluentIterable.from(authoritiesString).transform(toGrantedAuthorities()).toList();
+        this.authorities = authoritiesString.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
         return this;
-    }
-
-    private Function<String, GrantedAuthority> toGrantedAuthorities() {
-        return new Function<String, GrantedAuthority>() {
-            @Override
-            public GrantedAuthority apply(String input) {
-                return new SimpleGrantedAuthority(input);
-            }
-        };
     }
 }

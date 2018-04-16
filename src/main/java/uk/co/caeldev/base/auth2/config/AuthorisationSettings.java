@@ -3,6 +3,8 @@ package uk.co.caeldev.base.auth2.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @ConfigurationProperties(prefix = "auth")
 public class AuthorisationSettings {
@@ -12,6 +14,8 @@ public class AuthorisationSettings {
     private String logInUrl;
 
     private String failureUrl;
+
+    private List<String> ignoreWebStaticResources;
 
     public String getLogInViewName() {
         return logInViewName;
@@ -35,5 +39,13 @@ public class AuthorisationSettings {
 
     public void setFailureUrl(final String failureUrl) {
         this.failureUrl = failureUrl;
+    }
+
+    public List<String> getIgnoreWebStaticResources() {
+        return ignoreWebStaticResources;
+    }
+
+    public void setIgnoreWebStaticResources(final List<String> ignoreWebStaticResources) {
+        this.ignoreWebStaticResources = ignoreWebStaticResources;
     }
 }

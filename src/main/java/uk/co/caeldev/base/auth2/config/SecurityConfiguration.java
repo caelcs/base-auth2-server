@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import java.util.List;
+
 @Configuration
 @Order(99)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -21,7 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable()
                 .authorizeRequests()
-                .antMatchers( authorisationSettings.getLogInUrl(), "/oauth/authorize", "/oauth/confirm_access")
+                .antMatchers( authorisationSettings.getLogInUrl())
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -33,9 +35,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(final WebSecurity web) throws Exception {
+        final List<String> ignoreWebStaticResources = authorisationSettings.getIgnoreWebStaticResources();
+        final String[] ignores = ignoreWebStaticResources.stream().toArray(String[]::new);
         web.ignoring()
-                .antMatchers(
-                        "/fonts/**");
+                .antMatchers(ignores);
     }
 
     @Bean
