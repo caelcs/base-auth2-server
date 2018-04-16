@@ -152,8 +152,6 @@ dependencies {
     implementation "com.google.guava:guava:${guavaVersion}"
     implementation "uk.co.caeldev:spring-security-mongo:${springSecurityMongoVersion}"
     implementation "uk.co.caeldev:spring-mvc-utils:${springMvcUtilsVersion}"
-
-
     implementation "org.apache.commons:commons-lang3:${apacheCommonsLang3Version}"
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
@@ -163,7 +161,6 @@ dependencies {
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
     testImplementation "com.github.tomakehurst:wiremock:${wiremockVersion}"
     testImplementation "com.github.fakemongo:fongo:${fongoVersion}"
-
     testImplementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     testImplementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity4"
 

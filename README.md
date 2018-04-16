@@ -4,33 +4,69 @@
 
 ## Overview
 
-Provides an OAuth2 server powered by Spring Boot with the ability to plug custom login page and using Mongo DB as datastore.
+This projects provides you a basic auth2 server configuration powered by Spring Boot with the ability to plug custom 
+login page and using Mongo DB as datastore.
 
 ## Requierments
-- Docker 1.7
+
 - Java 1.8
 
+## Setup
 
-## Build and Run docker image
+1. Add the dependency to your project, remember that it will work from Spring Boot 2.x onwards.
+2. add the yml or property file in order to configure a few things that you might
+want to customise.
 
-In order to build and image use:
-- ./gradlew buildDocker
+Here you have the pages that you can customise:
 
-if you want to push it
-- docker push adolfoecs/base-auth2-server:0.1.0-SNAPSHOT
+- Log In
+- Authorise
 
-In order to run the image use:
+and the following Urls:
 
-- docker run -p 8580 --name base-auth2-server-instance1 -t adolfoecs/base-auth2-server:0.1.0-SNAPSHOT
+- Log in
+- Log out
+- Failure url
 
-## Running
+For each you will have to create the html, css and js files following the convention below:
 
-In order to run the app just execute:
+```$xslt
+resources
+    static
+        css
+            app.css       
+    templates
+        authorize.html
+        login.html
+    application.yml    
 
-./gradlew bootrun
+```
 
-To build a jar and run all the tests (Unit and e2e):
+Here you have an example of how your application properties will look like:
 
-./gradlew test assemble
+```yaml
+mongo:
+  host: localhost
+  port: 27017
+  database: test
+  username: dev
+  password: dev
 
-the application run on http://localhost:8080.
+auth:
+  logInUrl: /login
+  logInViewName: login
+  failureUrl: /login
+  ignoreWebStaticResources:
+    - /fonts/**
+
+info:
+  app:
+    name: oauth2
+    description: OAuth2 Provider
+
+server:
+  port: 9080
+  servlet:
+    context-path: /sso
+```
+
