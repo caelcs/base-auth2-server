@@ -16,6 +16,20 @@ login page and using Mongo DB as datastore.
 1. Add the dependency to your project, remember that it will work from Spring Boot 2.x onwards.
 2. add the yml or property file in order to configure a few things that you might
 want to customise.
+3. Add the @EnableBaseAuthServer annotation to your Spring Boot app.
+
+````java
+@SpringBootApplication
+@EnableBaseAuthServer
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}
+````
+4. Customise the pages.
 
 Here you have the pages that you can customise:
 
