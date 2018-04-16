@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.co.caeldev.base.auth2.persisters.Persister;
@@ -40,6 +41,9 @@ public class AuthorizationServerIntegrationTest {
     @Autowired
     private Persister persister;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Test
     public void shouldNotAuthorizeWhenUrlIsProtected() {
         given().port(port).basePath(basePath).redirects().follow(false)
@@ -60,7 +64,7 @@ public class AuthorizationServerIntegrationTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @Test
+    @Test //review
     public void shouldRedirectAuthorizationWhenUrlIsProtectedAndNotLogin() {
         given().port(port).basePath(basePath).redirects().follow(false)
                 .when()
@@ -78,7 +82,7 @@ public class AuthorizationServerIntegrationTest {
         String password = string().next();
         String username = string().next();
         givenUser().username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .grantedAuthorities("ROLE_USER")
                 .persist(persister);
 
@@ -101,7 +105,7 @@ public class AuthorizationServerIntegrationTest {
         String password = string().next();
         String username = string().next();
         givenUser().username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .grantedAuthorities("ROLE_USER")
                 .persist(persister);
 
@@ -124,7 +128,7 @@ public class AuthorizationServerIntegrationTest {
         String password = string().next();
         String username = string().next();
         givenUser().username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .grantedAuthorities("ROLE_USER")
                 .persist(persister);
 
@@ -166,7 +170,7 @@ public class AuthorizationServerIntegrationTest {
         String password = string().next();
         String username = string().next();
         givenUser().username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .grantedAuthorities("ROLE_USER")
                 .persist(persister);
 
@@ -218,7 +222,7 @@ public class AuthorizationServerIntegrationTest {
         String password = string().next();
         String username = string().next();
         givenUser().username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .grantedAuthorities("ROLE_USER")
                 .persist(persister);
 
@@ -226,7 +230,7 @@ public class AuthorizationServerIntegrationTest {
         String clientId = integer().next() + "test" + integer().next();
         final String clientSecret = string().next();
         givenMongoClientDetail().clientId(clientId)
-                .clientSecret(clientSecret)
+                .clientSecret(passwordEncoder.encode(clientSecret))
                 .scopes("read")
                 .authorizedGrantTypes("password")
                 .authorities("ROLE_CLIENT")
@@ -274,7 +278,7 @@ public class AuthorizationServerIntegrationTest {
         String password = string().next();
         String username = string().next();
         givenUser().username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .grantedAuthorities("ROLE_CLIENT")
                 .persist(persister);
 
@@ -282,7 +286,7 @@ public class AuthorizationServerIntegrationTest {
         String clientId = integer().next() + "test" + integer().next();
         final String clientSecret = string().next();
         givenMongoClientDetail().clientId(clientId)
-                .clientSecret(clientSecret)
+                .clientSecret(passwordEncoder.encode(clientSecret))
                 .scopes("read")
                 .authorizedGrantTypes("password")
                 .authorities("ROLE_CLIENT")
@@ -330,7 +334,7 @@ public class AuthorizationServerIntegrationTest {
         String password = string().next();
         String username = string().next();
         givenUser().username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .grantedAuthorities("ROLE_USER")
                 .persist(persister);
 
@@ -339,7 +343,7 @@ public class AuthorizationServerIntegrationTest {
         final String clientSecret = string().next();
         final String redirectUrl = "/";
         givenMongoClientDetail().clientId(clientId)
-                .clientSecret(clientSecret)
+                .clientSecret(passwordEncoder.encode(clientSecret))
                 .scopes("read")
                 .authorizedGrantTypes("authorization_code")
                 .authorities("ROLE_CLIENT")
