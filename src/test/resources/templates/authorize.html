@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="Oauth2 Server"/>
+    <meta name="author" content="Adolfo Custidiano"/>
+
+    <title>OAuth2 Authorization</title>
+
+    <!-- LIB STYLES -->
+    <link rel="stylesheet" type="text/css" href="../css/vendor.min.css"/>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'/>
+    <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet'
+          type='text/css'/>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'/>
+
+    <!-- APP STYLES -->
+    <link rel="stylesheet" type="text/css" href="../css/app.min.css"/>
+
+</head>
+
+<body id="page-top" class="index">
+
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#/">Tidy Favs Authorization</a>
+        </div>
+    </div>
+</nav>
+
+<section id="login">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center submit-item">
+                <h3 class="section-heading">Please Confirm</h3>
+                <h5 class="text-white">Do you authorize <span class="text-primary"
+                                                              th:text="${authorizationRequest.clientId}"/></h5>
+                <h5 class="text-white">at <span class="text-primary" th:text="${authorizationRequest.redirectUri}"/>
+                </h5>
+                <h5 class="text-white">to access your protected resources
+                    <div th:each="scopeItem : ${scopes}">
+                        <span class="text-primary" th:text="${scopeItem.key}"/>
+                    </div>
+                </h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 submit-item"/>
+            <div class="col-md-3 submit-item">
+                <form id="approveForm" name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
+                    <input type="hidden" name="user_oauth_approval" value="true"/>
+                    <!--<input type='hidden' th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                    <input type="hidden" name="scope.read" value="true"/>
+
+                    <div class="clearfix"></div>
+                    <div class="col-lg-12 text-center">
+                        <div id="successApprove"></div>
+                        <button type="submit" class="btn btn-xl">Approve</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3 submit-item">
+                <form id="denyForm" name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
+                    <input type="hidden" name="user_oauth_approval" value="true"/>
+                    <!--<input type='hidden' th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                    <input type="hidden" name="scope.read" value="false"/>
+
+                    <div class="clearfix"></div>
+                    <div class="col-lg-12 text-center">
+                        <div id="successDeny"></div>
+                        <button type="submit" class="btn btn-xl">Deny</button>
+                    </div>
+
+                </form>
+            </div>
+            <div class="col-md-3 submit-item"/>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <span class="copyright">Copyright &copy; OAuth2 Server 2016</span>
+            </div>
+            <div class="col-md-4">
+                <ul class="list-inline social-buttons">
+                    <li><a href="#"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-facebook"></i></a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-linkedin"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <ul class="list-inline quicklinks">
+                    <li><a href="#">Privacy Policy</a>
+                    </li>
+                    <li><a href="#">Terms of Use</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+
+</html>
