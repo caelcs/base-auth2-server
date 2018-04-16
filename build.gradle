@@ -5,7 +5,6 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("pl.allegro.tech.build:axion-release-plugin:${axionReleasePluginVersion}")
     }
 }
@@ -14,9 +13,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'signing'
 apply plugin: 'maven'
-apply plugin: 'org.springframework.boot'
 apply plugin: 'pl.allegro.tech.build.axion-release'
-apply plugin: 'io.spring.dependency-management'
 apply plugin: 'jacoco'
 
 sourceCompatibility = 1.8
@@ -145,24 +142,24 @@ uploadArchives {
 }
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.security.oauth:spring-security-oauth2"
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+    implementation "org.springframework.security.oauth:spring-security-oauth2:${springBootVersion}"
     implementation "com.google.code.gson:gson:${gsonVersion}"
     implementation "com.google.guava:guava:${guavaVersion}"
     implementation "uk.co.caeldev:spring-security-mongo:${springSecurityMongoVersion}"
     implementation "uk.co.caeldev:spring-mvc-utils:${springMvcUtilsVersion}"
     implementation "org.apache.commons:commons-lang3:${apacheCommonsLang3Version}"
 
-    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     testImplementation "org.assertj:assertj-core:${assertjCoreVersion}"
     testImplementation "uk.org.fyodor:fyodor-core:${fyodorVersion}"
     testImplementation "uk.org.fyodor:fyodor-junit:${fyodorVersion}"
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
     testImplementation "com.github.tomakehurst:wiremock:${wiremockVersion}"
     testImplementation "com.github.fakemongo:fongo:${fongoVersion}"
-    testImplementation "org.springframework.boot:spring-boot-starter-thymeleaf"
-    testImplementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity4"
+    testImplementation "org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}"
+    testImplementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity4:${thymeleafExtrasSpringSecurityVersion}"
 
 }
 
