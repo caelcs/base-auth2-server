@@ -1,0 +1,23 @@
+mongo:
+  host: localhost
+  port: 27017
+  database: invoicer
+  username: dev
+  password: dev
+
+auth:
+  logInUrl: /login
+  logInViewName: login
+  failureUrl: /login
+  ignoreWebStaticResources:
+    - /fonts/**
+
+info:
+  app:
+    name: oauth2
+    description: OAuth2 Provider
+
+server:
+  port: 9080
+  servlet:
+    context-path: /sso

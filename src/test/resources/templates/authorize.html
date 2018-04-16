@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="Oauth2 Server"/>
+    <meta name="author" content="Adolfo Custidiano"/>
+
+    <title>OAuth2 Authorization</title>
+
+</head>
+
+<body id="page-top" class="index">
+
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#/">Authorization</a>
+        </div>
+    </div>
+</nav>
+
+<section id="login">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center submit-item">
+                <h3 class="section-heading">Please Confirm</h3>
+                <h5 class="text-white">Do you authorize <span class="text-primary"
+                                                              th:text="${authorizationRequest.clientId}"/></h5>
+                <h5 class="text-white">at <span class="text-primary" th:text="${authorizationRequest.redirectUri}"/>
+                </h5>
+                <h5 class="text-white">to access your protected resources
+                    <div th:each="scopeItem : ${scopes}">
+                        <span class="text-primary" th:text="${scopeItem.key}"/>
+                    </div>
+                </h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 submit-item"/>
+            <div class="col-md-3 submit-item">
+                <form id="approveForm" name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
+                    <input type="hidden" name="user_oauth_approval" value="true"/>
+                    <!--<input type='hidden' th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                    <input type="hidden" name="scope.read" value="true"/>
+
+                    <div class="clearfix"></div>
+                    <div class="col-lg-12 text-center">
+                        <div id="successApprove"></div>
+                        <button type="submit" class="btn btn-xl">Approve</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3 submit-item">
+                <form id="denyForm" name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
+                    <input type="hidden" name="user_oauth_approval" value="true"/>
+                    <!--<input type='hidden' th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                    <input type="hidden" name="scope.read" value="false"/>
+
+                    <div class="clearfix"></div>
+                    <div class="col-lg-12 text-center">
+                        <div id="successDeny"></div>
+                        <button type="submit" class="btn btn-xl">Deny</button>
+                    </div>
+
+                </form>
+            </div>
+            <div class="col-md-3 submit-item"/>
+        </div>
+    </div>
+</section>
+</body>
+
+</html>
