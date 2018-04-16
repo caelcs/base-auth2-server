@@ -34,7 +34,7 @@ public class AuthorizationServerIntegrationTest {
     @Value("${local.server.port}")
     private int port;
 
-    @Value("${server.contextPath}")
+    @Value("${server.servlet.context-path}")
     private String basePath;
 
     @Autowired

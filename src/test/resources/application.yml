@@ -17,4 +17,5 @@ info:
 
 server:
   port: 9080
-  contextPath: /sso
+  servlet:
+    context-path: /sso

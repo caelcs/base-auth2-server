@@ -163,6 +163,10 @@ dependencies {
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
     testImplementation "com.github.tomakehurst:wiremock:${wiremockVersion}"
     testImplementation "com.github.fakemongo:fongo:${fongoVersion}"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    testImplementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity4"
+
 }
 
 task wrapper(type: Wrapper) {

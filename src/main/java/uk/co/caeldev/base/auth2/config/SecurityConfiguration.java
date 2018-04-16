@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
-@Order(101)
+@Order(99)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -20,15 +20,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(final HttpSecurity http) throws Exception {
         http
             .csrf().disable()
-            .requestMatchers().antMatchers("/", authorisationSettings.getLogInUrl(), "/oauth/authorize", "/oauth/confirm_access")
-            .and()
-            .authorizeRequests()
-                .anyRequest().authenticated()
-            .and()
-            .formLogin()
-            .loginPage(authorisationSettings.getLogInUrl()).failureUrl(authorisationSettings.getFailureUrl()).permitAll()
-            .and()
-            .logout().permitAll();
+                .authorizeRequests()
+                .antMatchers("/", authorisationSettings.getLogInUrl(), "/oauth/authorize", "/oauth/confirm_access")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .formLogin()
+                .loginPage(authorisationSettings.getLogInUrl())
+                .failureUrl(authorisationSettings.getFailureUrl());
     }
 
     @Override
