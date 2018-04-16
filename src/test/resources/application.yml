@@ -5,6 +5,11 @@ mongo:
   username: dev
   password: dev
 
+auth:
+  logInUrl: /login
+  logInViewName: login
+  failureUrl: /login
+
 info:
   app:
     name: oauth2
