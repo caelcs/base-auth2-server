@@ -5,12 +5,15 @@ buildscript {
     }
 
     dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("pl.allegro.tech.build:axion-release-plugin:${axionReleasePluginVersion}")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'signing'
 apply plugin: 'maven'
 apply plugin: 'pl.allegro.tech.build.axion-release'
@@ -54,6 +57,7 @@ task sourcesJar(type: Jar) {
 }
 
 jar {
+    enabled = true
     archivesBaseName = rootProject.name
     group = group
     version = version
@@ -63,8 +67,14 @@ jar {
                 'Built-By': System.getProperty('user.name'),
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version'),
-                'Built-Gradle': gradle.gradleVersion
+                'Built-Gradle': gradle.gradleVersion,
+                'Main-Class' : 'com.petehouston.greet.Program'
     }
+}
+
+bootJar {
+    classifier = 'boot'
+    mainClassName = 'no.main.application.class'
 }
 
 artifacts {
@@ -142,25 +152,24 @@ uploadArchives {
 }
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
-    implementation "org.springframework.security.oauth:spring-security-oauth2:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.security.oauth:spring-security-oauth2"
     implementation "com.google.code.gson:gson:${gsonVersion}"
     implementation "com.google.guava:guava:${guavaVersion}"
     implementation "uk.co.caeldev:spring-security-mongo:${springSecurityMongoVersion}"
     implementation "uk.co.caeldev:spring-mvc-utils:${springMvcUtilsVersion}"
     implementation "org.apache.commons:commons-lang3:${apacheCommonsLang3Version}"
 
-    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.assertj:assertj-core:${assertjCoreVersion}"
     testImplementation "uk.org.fyodor:fyodor-core:${fyodorVersion}"
     testImplementation "uk.org.fyodor:fyodor-junit:${fyodorVersion}"
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
     testImplementation "com.github.tomakehurst:wiremock:${wiremockVersion}"
     testImplementation "com.github.fakemongo:fongo:${fongoVersion}"
-    testImplementation "org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}"
-    testImplementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity4:${thymeleafExtrasSpringSecurityVersion}"
-
+    testImplementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    testImplementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity4"
 }
 
 task wrapper(type: Wrapper) {
