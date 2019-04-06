@@ -7,6 +7,7 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath("pl.allegro.tech.build:axion-release-plugin:${axionReleasePluginVersion}")
+        classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.2"
     }
 }
 
@@ -18,6 +19,7 @@ apply plugin: 'signing'
 apply plugin: 'maven'
 apply plugin: 'pl.allegro.tech.build.axion-release'
 apply plugin: 'jacoco'
+apply plugin: "com.github.kt3k.coveralls"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -97,6 +99,14 @@ jacocoTestReport {
     }
 }
 
+coveralls {
+    jacocoReportPath 'build/reports/jacoco/test/jacocoTestReport.xml'
+}
+
+tasks.coveralls {
+    dependsOn 'check'
+}
+
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -123,12 +133,12 @@ uploadArchives {
                 packaging "jar"
 
                 description "A Library to have a Oauth2 server using mongo db"
-                url "https://github.com/caelwinner/base-auth2-server"
+                url "https://github.com/caelcs/base-auth2-server"
 
                 scm {
-                    url "https://github.com/caelwinner/base-auth2-server.git"
-                    connection "https://github.com/caelwinner/base-auth2-server.git"
-                    developerConnection "https://github.com/caelwinner/base-auth2-server.git"
+                    url "https://github.com/caelcs/base-auth2-server.git"
+                    connection "https://github.com/caelcs/base-auth2-server.git"
+                    developerConnection "https://github.com/caelcs/base-auth2-server.git"
                 }
 
                 licenses {
@@ -141,7 +151,7 @@ uploadArchives {
 
                 developers {
                     developer {
-                        id "caelwinner"
+                        id "caelcs"
                         name "Adolfo Custidiano"
                         email "adolfoecs@gmail.com"
                     }
