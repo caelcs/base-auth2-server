@@ -1,7 +1,7 @@
 # Base Auth2 Server
 
 [![Build Status](https://travis-ci.org/caelcs/base-auth2-server.svg?branch=master)](https://travis-ci.org/caelcs/base-auth2-server)
-
+[![Coverage Status](https://coveralls.io/repos/github/caelcs/base-auth2-server/badge.svg?branch=master)](https://coveralls.io/github/caelcs/base-auth2-server?branch=master)
 
 ## Overview
 
