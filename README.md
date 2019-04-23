@@ -87,7 +87,7 @@ server:
 
 ## DB User
 Create in your mongo instance the user that you will use to access the database defined in the YML file.
-
+```json
 db.createUser(
   {
     user: "dev",
@@ -95,3 +95,4 @@ db.createUser(
     roles: [ { role: "readWrite", db: "test" } ]
   }
 )
+```
