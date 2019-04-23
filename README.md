@@ -85,3 +85,13 @@ server:
     context-path: /sso
 ```
 
+## DB User
+Create in your mongo instance the user that you will use to access the database defined in the YML file.
+
+db.createUser(
+  {
+    user: "dev",
+    pwd: "dev",
+    roles: [ { role: "readWrite", db: "test" } ]
+  }
+)
